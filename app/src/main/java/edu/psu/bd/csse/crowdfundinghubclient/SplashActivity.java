@@ -32,8 +32,7 @@ public class SplashActivity extends AppCompatActivity {
         progressMessage = (TextView) findViewById(R.id.progressMessageText);
 
         RequestCampaignTask task = new RequestCampaignTask(this);
-        task.execute("http://" +HOST + PORT + "/campaigns");
-
+        task.execute("http://" + HOST + PORT + "/campaigns");
     }
 
    private class RequestCampaignTask extends AsyncTask<String, String, ArrayList<Campaign>> {
@@ -57,12 +56,22 @@ public class SplashActivity extends AppCompatActivity {
            ArrayList<Campaign> campaigns = new ArrayList<>();
            for (int n = 0; n < jsonResponse.length(); n++) {
                try {
+                   // get the JSON object from the response (A big JSON array of campaigns)
                    json = jsonResponse.getJSONObject(n);
+
+                   // create our Java model of a campaign
                    c = new Campaign();
                    c.setUrl(json.getString("url"));
                    c.setTitle(json.getString("title"));
                    c.setType(json.getString("type"));
-                   publishProgress(c.getTitle());
+                   c.setAmountRaised(json.getDouble("amt_raised"));
+                   c.setAmountRaised(json.getDouble("percent_complete"));
+
+                   // print out progress on splash in case it takes a while
+                   //publishProgress(c.getTitle());
+                   publishProgress("Processing campaign " + n + " of " + jsonResponse.length());
+
+                   // add to campaign results list
                    campaigns.add(c);
                } catch (JSONException e) {
                    e.printStackTrace();

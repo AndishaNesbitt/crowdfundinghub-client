@@ -10,8 +10,6 @@ import java.util.ArrayList;
  */
 public class Campaign implements Parcelable {
 
-    public static ArrayList<Campaign> campaigns = new ArrayList<>();
-
     public static final String TYPE_DONATION = "Donation";
     public static final String TYPE_REWARDS  = "Rewards";
     public static final String TYPE_EQUITY   = "Equity";
@@ -19,13 +17,23 @@ public class Campaign implements Parcelable {
     private String title;
     private String url;
     private String type;
+    private double amountRaised;
+    private double percentComplete;
 
-    public Campaign() { }
+    public Campaign() {
+        this.setTitle("");
+        this.setUrl("");
+        this.setType(TYPE_REWARDS);
+        this.setAmountRaised(0.0);
+        this.setPercentComplete(0.0);
+    }
 
-    public Campaign(String title, String url, String type) {
+    public Campaign(String title, String url, String type, double amountRaised, double percentComplete) {
         this.setTitle(title);
         this.setUrl(url);
         this.setType(type);
+        this.setAmountRaised(amountRaised);
+        this.setPercentComplete(percentComplete);
     }
 
     /**
@@ -38,6 +46,8 @@ public class Campaign implements Parcelable {
         this.title = in.readString();
         this.url = in.readString();
         this.type = in.readString();
+        this.amountRaised = in.readDouble();
+        this.percentComplete = in.readDouble();
     }
 
     public String getTitle() {
@@ -64,6 +74,23 @@ public class Campaign implements Parcelable {
         this.type = type;
     }
 
+    public double getAmountRaised() {
+        return amountRaised;
+    }
+
+    public void setAmountRaised(double amountRaised) {
+        this.amountRaised = amountRaised;
+    }
+
+
+    public double getPercentComplete() {
+        return percentComplete;
+    }
+
+    public void setPercentComplete(double percentComplete) {
+        this.percentComplete = percentComplete;
+    }
+
     /*
     * PARCELABLE IMPLEMENTATION
     */
@@ -78,6 +105,8 @@ public class Campaign implements Parcelable {
         dest.writeString(title);
         dest.writeString(url);
         dest.writeString(type);
+        dest.writeDouble(amountRaised);
+        dest.writeDouble(percentComplete);
     }
 
     public static final Parcelable.Creator<Campaign> CREATOR = new Parcelable.Creator<Campaign>() {
