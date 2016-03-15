@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">CrowdfundingHubClient</string>
+
+    <!-- SplashActivity loading progress messages -->
+    <string-array name="progress_begin_messages">
+        <item>Getting crowdfunding campaigns...</item>
+        <item>Retrieving the latest campaigns!</item>
+    </string-array>
+
+    <string-array name="progress_finished_messages">
+        <item>All done!</item>
+        <item>You are up to date!</item>
+    </string-array>
+    
+    <!-- Tab Section Titles -->
+    <string name="tab_title_give">Give</string>
+    <string name="tab_title_earn">Earn</string>
+    <string name="tab_title_invest">Invest</string>
+
+</resources>
