@@ -19,7 +19,7 @@ import java.util.List;
  *
  * Created by Zach on 1/31/2016.
  */
-public class CampaignDAOArray implements ICampaignDAO {
+public class CampaignDAOArray implements ICampaignCrud {
 
     private ArrayList<Campaign> campaignsdb;
 
@@ -33,14 +33,9 @@ public class CampaignDAOArray implements ICampaignDAO {
     }
 
     @Override
-    public List<Campaign> getCampaigns() {
-        return campaignsdb;
-    }
-
-    @Override
-    public List<Campaign> getCampaigns(int typeno) {
+    public List<Campaign> getCampaigns(int section) {
         String type;
-        switch (typeno) {
+        switch (section) {
             case 1:
                 type = Campaign.TYPE_REWARDS;
                 break;

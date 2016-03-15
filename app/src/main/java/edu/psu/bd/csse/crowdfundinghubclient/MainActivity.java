@@ -21,17 +21,19 @@ import java.util.List;
 
 import edu.psu.bd.csse.crowdfundinghubclient.model.Campaign;
 import edu.psu.bd.csse.crowdfundinghubclient.model.CampaignDAOArray;
+import edu.psu.bd.csse.crowdfundinghubclient.model.DbHandler;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static CampaignDAOArray dao;
+    private static DbHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ArrayList<Campaign> campaigns = getIntent().getExtras().getParcelableArrayList("campaignsList");
-        dao = new CampaignDAOArray(campaigns);
+
+        // create instance of the Database handler to get campaigns
+        db = new DbHandler(this, null, null, 1);
 
         // find our toolbar view
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -115,14 +117,19 @@ public class MainActivity extends AppCompatActivity {
             // inflate our browse view that contains a ListView for campaign listings
             View rootView = inflater.inflate(R.layout.fragment_campaign_browse, container, false);
             ListView campaignListView = (ListView)rootView.findViewById(R.id.campaignListView);
-            final List<Campaign> campaigns = dao.getCampaigns(getArguments().getInt(ARG_SECTION_NUMBER));
 
+            // get campaigns from the database for the tab section (query based on campaign type)
+            final List<Campaign> campaigns = db.getCampaigns(getArguments().getInt(ARG_SECTION_NUMBER));
+
+            // use custom List adapter to populate ListView
             CampaignListAdapter adapter = new CampaignListAdapter(getContext(), campaigns);
             campaignListView.setAdapter(adapter);
 
+            // ClickListener for when a user taps a list item
             campaignListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // get the selected campaign
                     Campaign campaignSelected = campaigns.get(position);
 
                     // Create a new intent, we are starting an activity to view the selected campaign's webpage

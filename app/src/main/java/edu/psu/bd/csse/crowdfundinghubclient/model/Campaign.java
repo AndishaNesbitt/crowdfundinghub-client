@@ -10,9 +10,13 @@ import java.util.ArrayList;
  */
 public class Campaign implements Parcelable {
 
-    public static final String TYPE_DONATION = "Donation";
     public static final String TYPE_REWARDS  = "Rewards";
+    public static final String TYPE_DONATION = "Donation";
     public static final String TYPE_EQUITY   = "Equity";
+
+    public static final int SECTION_REWARDS  = 1;
+    public static final int SECTION_DONATION = 2;
+    public static final int SECTION_EQUITY   = 3;
 
     private String title;
     private String url;

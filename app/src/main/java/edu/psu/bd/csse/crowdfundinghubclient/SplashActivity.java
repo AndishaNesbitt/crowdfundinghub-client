@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import edu.psu.bd.csse.crowdfundinghubclient.model.Campaign;
+import edu.psu.bd.csse.crowdfundinghubclient.model.DbHandler;
 import edu.psu.bd.csse.crowdfundinghubclient.net.HttpController;
 
 public class SplashActivity extends AppCompatActivity {
@@ -35,20 +36,28 @@ public class SplashActivity extends AppCompatActivity {
         task.execute("http://" + HOST + PORT + "/campaigns");
     }
 
-   private class RequestCampaignTask extends AsyncTask<String, String, ArrayList<Campaign>> {
+   private class RequestCampaignTask extends AsyncTask<String, String, Boolean> {
 
        private Activity activity;
+       private DbHandler db;
 
        public RequestCampaignTask(Activity activity) {
            this.activity = activity;
        }
 
        @Override
-       protected ArrayList<Campaign> doInBackground(String... urls) {
+       protected Boolean doInBackground(String... urls) {
            JSONArray jsonResponse;
 
            publishProgress("Getting crowdfunding campaigns...");
            jsonResponse = HttpController.makeGetRequest(urls[0]);
+
+           // make sure the request was successful
+           if (jsonResponse == null)
+               return false; // return with failure
+
+           // need to Upgrade database to drop old table***
+           db = new DbHandler(activity, null, null, 1);
 
            // parse Json into Campaign models
            Campaign c;
@@ -59,7 +68,7 @@ public class SplashActivity extends AppCompatActivity {
                    // get the JSON object from the response (A big JSON array of campaigns)
                    json = jsonResponse.getJSONObject(n);
 
-                   // create our Java model of a campaign
+                   // create our Java model of a campaign from JSON object entry
                    c = new Campaign();
                    c.setUrl(json.getString("url"));
                    c.setTitle(json.getString("title"));
@@ -67,36 +76,41 @@ public class SplashActivity extends AppCompatActivity {
                    c.setAmountRaised(json.getDouble("amt_raised"));
                    c.setAmountRaised(json.getDouble("percent_complete"));
 
-                   // print out progress on splash in case it takes a while
+                   // print out progress on splash in case it takes a while (might not be seen otherwise)
                    //publishProgress(c.getTitle());
                    publishProgress("Processing campaign " + n + " of " + jsonResponse.length());
 
-                   // add to campaign results list
-                   campaigns.add(c);
+                   // add campaign model to local database (acts as a cache)
+                   db.addCampaign(c);
                } catch (JSONException e) {
                    e.printStackTrace();
+                   return false; // something went wrong parsing JSON
                }
            }
 
            publishProgress("All Done!");
 
-           return campaigns;
+           return true; // campaigns received and cached to sqlite database
        }
 
        protected void onProgressUpdate(String... progress) {
            progressMessage.setText(progress[0]);
        }
 
-       protected void onPostExecute(ArrayList<Campaign> campaigns) {
-           // bundle our campaign data list for the Intent
-           Bundle extras = new Bundle();
-           extras.putParcelableArrayList("campaignsList", campaigns);
+       protected void onPostExecute(Boolean success) {
+           Intent intent;
 
-           // switch to MainActivity
-           Intent intent = new Intent(activity, MainActivity.class);
-           intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-           intent.putExtras(extras);
-           activity.startActivity(intent);
+           // if the connection to the server and getting campaigns was successful..
+           if (success) {
+               // create an intent to switch to the main activity for browsing
+               intent = new Intent(activity, MainActivity.class);
+               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+               activity.startActivity(intent);
+           } else {
+               // show error message / screen
+               // OR JUST load old campaigns from local database from last successful launch
+           }
        }
    }
 }
