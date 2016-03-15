@@ -53,9 +53,12 @@ public class SplashActivity extends AppCompatActivity {
            jsonResponse = HttpController.makeGetRequest(urls[0]);
 
            // make sure the request was successful
-           if (jsonResponse == null)
-               return false; // return with failure
+           if (jsonResponse == null) {
+               publishProgress("Could not establish a connection to server! +" +
+                       "\nRe-check your connection and try again!");
 
+               return false; // return with failure
+           }
            // need to Upgrade database to drop old table***
            db = new DbHandler(activity, null, null, 1);
 
@@ -73,8 +76,8 @@ public class SplashActivity extends AppCompatActivity {
                    c.setUrl(json.getString("url"));
                    c.setTitle(json.getString("title"));
                    c.setType(json.getString("type"));
-                   c.setAmountRaised(json.getDouble("amt_raised"));
-                   c.setAmountRaised(json.getDouble("percent_complete"));
+                   //c.setAmountRaised(json.getDouble("amt_raised"));
+                   //c.setAmountRaised(json.getDouble("percent_complete"));
 
                    // print out progress on splash in case it takes a while (might not be seen otherwise)
                    //publishProgress(c.getTitle());
@@ -84,6 +87,7 @@ public class SplashActivity extends AppCompatActivity {
                    db.addCampaign(c);
                } catch (JSONException e) {
                    e.printStackTrace();
+                   publishProgress("Whoops! Something went wrong...It is on our end :(");
                    return false; // something went wrong parsing JSON
                }
            }
