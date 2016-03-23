@@ -46,9 +46,32 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        dropDatabase();
+        onCreate(db);
+    }
+
+    private void create() {
+        db = getWritableDatabase();
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
+                + TABLE_COL_TITLE + " TEXT, "
+                + TABLE_COL_URL + " TEXT, "
+                + TABLE_COL_TYPE + " TEXT, "
+                + TABLE_COL_AMT_RAISED + " REAL, "
+                + TABLE_COL_PERCENT_COMPLETE + " REAL)";
+
+        // execute SQL to create the table for campaigns
+        db.execSQL(CREATE_TABLE);
+    }
+
+    private void dropDatabase() {
+        db = getWritableDatabase();
         String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         db.execSQL(DROP_TABLE);
-        onCreate(db);
+    }
+
+    public void upgrade() {
+        dropDatabase();
+        create();
     }
 
     private List<Campaign> queryCampaignList(String query) {
@@ -84,7 +107,7 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
             case Campaign.SECTION_EQUITY:
                 return Campaign.TYPE_EQUITY;
             default:
-                return "";
+                return Campaign.TYPE_REWARDS;
         }
     }
 
@@ -109,6 +132,13 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
 
         String query = "SELECT * FROM " + TABLE_NAME
                 + " WHERE " + TABLE_COL_TYPE + " = \"" + getTypeName(section) + "\"";
+
+        return queryCampaignList(query);
+    }
+
+    public List<Campaign> getCampaigns() {
+
+        String query = "SELECT * FROM " + TABLE_NAME;
 
         return queryCampaignList(query);
     }

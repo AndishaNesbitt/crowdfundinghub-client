@@ -43,6 +43,8 @@ public class SplashActivity extends AppCompatActivity {
 
        public RequestCampaignTask(Activity activity) {
            this.activity = activity;
+           // need to Upgrade database to drop old table***
+           db = new DbHandler(activity, null, null, 1);
        }
 
        @Override
@@ -59,8 +61,8 @@ public class SplashActivity extends AppCompatActivity {
 
                return false; // return with failure
            }
-           // need to Upgrade database to drop old table***
-           db = new DbHandler(activity, null, null, 1);
+
+           db.upgrade();
 
            // parse Json into Campaign models
            Campaign c;
@@ -76,11 +78,10 @@ public class SplashActivity extends AppCompatActivity {
                    c.setUrl(json.getString("url"));
                    c.setTitle(json.getString("title"));
                    c.setType(json.getString("type"));
-                   //c.setAmountRaised(json.getDouble("amt_raised"));
-                   //c.setAmountRaised(json.getDouble("percent_complete"));
+                   c.setAmountRaised(json.getDouble("amt_raised"));
+                   c.setAmountRaised(json.getDouble("percent_complete"));
 
                    // print out progress on splash in case it takes a while (might not be seen otherwise)
-                   //publishProgress(c.getTitle());
                    publishProgress("Processing campaign " + n + " of " + jsonResponse.length());
 
                    // add campaign model to local database (acts as a cache)
@@ -103,7 +104,6 @@ public class SplashActivity extends AppCompatActivity {
 
        protected void onPostExecute(Boolean success) {
            Intent intent;
-
            // if the connection to the server and getting campaigns was successful..
            if (success) {
                // create an intent to switch to the main activity for browsing
