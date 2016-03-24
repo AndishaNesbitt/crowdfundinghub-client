@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Campaign implements Parcelable {
 
     public static final String TYPE_REWARDS  = "Rewards";
-    public static final String TYPE_DONATION = "Donation";
+    public static final String TYPE_DONATION = "Donations";
     public static final String TYPE_EQUITY   = "Equity";
 
     public static final int SECTION_REWARDS  = 1;

@@ -128,17 +128,18 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
     }
 
     @Override
-    public List<Campaign> getCampaigns(int section) {
+    public List<Campaign> getCampaigns() {
 
-        String query = "SELECT * FROM " + TABLE_NAME
-                + " WHERE " + TABLE_COL_TYPE + " = \"" + getTypeName(section) + "\"";
+        String query = "SELECT * FROM " + TABLE_NAME;
 
         return queryCampaignList(query);
     }
 
-    public List<Campaign> getCampaigns() {
+    @Override
+    public List<Campaign> getCampaigns(int section) {
 
-        String query = "SELECT * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_NAME
+                + " WHERE " + TABLE_COL_TYPE + " = \"" + getTypeName(section) + "\"";
 
         return queryCampaignList(query);
     }

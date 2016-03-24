@@ -23,6 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     private final String HOST = "162.243.227.230";
     private final String PORT = ":3000";
 
+
     private TextView progressMessage;
 
     @Override

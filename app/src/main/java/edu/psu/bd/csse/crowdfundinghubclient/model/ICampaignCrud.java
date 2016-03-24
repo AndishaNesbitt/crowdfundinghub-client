@@ -7,7 +7,10 @@ import java.util.List;
  */
 public interface ICampaignCrud {
 
-    public void addCampaign(Campaign campaign);
-    public List<Campaign> getCampaigns(int section);
+    void addCampaign(Campaign campaign);
+
+    List<Campaign> getCampaigns();
+
+    List<Campaign> getCampaigns(int section);
 
 }

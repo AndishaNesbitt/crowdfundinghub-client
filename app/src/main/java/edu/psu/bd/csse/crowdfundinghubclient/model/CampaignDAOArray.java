@@ -33,6 +33,11 @@ public class CampaignDAOArray implements ICampaignCrud {
     }
 
     @Override
+    public List<Campaign> getCampaigns() {
+        return campaignsdb;
+    }
+
+    @Override
     public List<Campaign> getCampaigns(int section) {
         String type;
         switch (section) {
