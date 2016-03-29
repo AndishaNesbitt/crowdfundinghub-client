@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.psu.bd.csse.crowdfundinghubclient.model.Campaign;
@@ -33,10 +32,8 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 
         // populate the campaignView with model data
         TextView title = (TextView)campaignView.findViewById(R.id.campaignTitle);
-        TextView url = (TextView)campaignView.findViewById(R.id.campaignUrl);
 
         title.setText(campaign.getTitle());
-        url.setText(campaign.getUrl());
 
         return campaignView;
     }

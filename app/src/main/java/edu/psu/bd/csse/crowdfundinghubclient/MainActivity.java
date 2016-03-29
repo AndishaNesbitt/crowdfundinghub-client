@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             CampaignListAdapter adapter = new CampaignListAdapter(getContext(), campaigns);
             campaignListView.setAdapter(adapter);
 
-            // ClickListener for when a user taps a list item
+            // ItemClickListener for when a user taps a list item
             campaignListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -141,6 +141,16 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtras(extras);
                     // now start the WebActivity
                     startActivity(intent);
+                }
+            });
+
+            // OnLongItemClickListener for when a user holds down on a campaign list item
+            campaignListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    Campaign campaignSelected = campaigns.get(position);
+
+                    return true;
                 }
             });
 

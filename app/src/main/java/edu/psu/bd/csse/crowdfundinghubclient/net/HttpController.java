@@ -26,21 +26,29 @@ public class HttpController {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(false);
             urlConnection.setRequestMethod("GET");
-            //urlConnection.setConnectTimeout(15000);
+            urlConnection.setConnectTimeout(10000); // timeout limit - 10 seconds
             urlConnection.connect();
 
-            // Receive response from the server through an input stream
-            InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
-            BufferedReader reader = new BufferedReader(in);
+            // get the response code to make sure we got an okay response
+            int responseCode = urlConnection.getResponseCode();
 
-            // Read the input via the BufferedReader and construct the response string
-            String line = "";
-            responseString = new StringBuilder();
-            while((line = reader.readLine()) != null)
-                responseString.append(line);
+            // Short and simple, response error handle. We do not really care about the exact error.
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // if everything went well, read the JSON Array...
 
-            // parse responseString into a JSON Object
-            json = new JSONArray(responseString.toString());
+                // Receive response from the server through an input stream
+                InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
+                BufferedReader reader = new BufferedReader(in);
+
+                // Read the input via the BufferedReader and construct the response string
+                String line = "";
+                responseString = new StringBuilder();
+                while((line = reader.readLine()) != null)
+                    responseString.append(line);
+
+                // parse responseString into a JSON Object
+                json = new JSONArray(responseString.toString());
+            }
 
         } catch(Exception e) {
             e.printStackTrace();

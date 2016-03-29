@@ -20,11 +20,10 @@ import edu.psu.bd.csse.crowdfundinghubclient.net.HttpController;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private final String HOST = "162.243.227.230";
-    private final String PORT = ":3000";
+    private final String HOST = "162.243.227.230"; // Public IP of our DigitalOcean server
+    private final String PORT = ":3000";           // service listening on port 3000
 
-
-    private TextView progressMessage;
+    private TextView progressMessage;              // TextView that displays progress messages
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +51,14 @@ public class SplashActivity extends AppCompatActivity {
        protected Boolean doInBackground(String... urls) {
            JSONArray jsonResponse;
 
-           publishProgress("Getting crowdfunding campaigns...");
+           publishProgress(R.string.splash_progress_start + "");
+
+           // fetch campaigns from server. returns a JSON Array of campaigns
            jsonResponse = HttpController.makeGetRequest(urls[0]);
 
            // make sure the request was successful
            if (jsonResponse == null) {
-               publishProgress("Could not establish a connection to server! +" +
-                       "\nRe-check your connection and try again!");
+               publishProgress(R.string.splash_progress_err_fetch + "\n" + R.string.error_resolve);
 
                return false; // return with failure
            }
@@ -68,7 +68,7 @@ public class SplashActivity extends AppCompatActivity {
            // parse Json into Campaign models
            Campaign c;
            JSONObject json;
-           ArrayList<Campaign> campaigns = new ArrayList<>();
+           //ArrayList<Campaign> campaigns = new ArrayList<>();
            for (int n = 0; n < jsonResponse.length(); n++) {
                try {
                    // get the JSON object from the response (A big JSON array of campaigns)
@@ -89,7 +89,7 @@ public class SplashActivity extends AppCompatActivity {
                    db.addCampaign(c);
                } catch (JSONException e) {
                    e.printStackTrace();
-                   publishProgress("Whoops! Something went wrong...It is on our end :(");
+                   publishProgress(R.string.splash_progress_err_json + "");
                    return false; // something went wrong parsing JSON
                }
            }
