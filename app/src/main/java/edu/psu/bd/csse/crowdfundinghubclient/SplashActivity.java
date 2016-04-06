@@ -51,14 +51,15 @@ public class SplashActivity extends AppCompatActivity {
        protected Boolean doInBackground(String... urls) {
            JSONArray jsonResponse;
 
-           publishProgress(R.string.splash_progress_start + "");
+           publishProgress("Getting crowdfunding campaigns...");
 
            // fetch campaigns from server. returns a JSON Array of campaigns
            jsonResponse = HttpController.makeGetRequest(urls[0]);
 
            // make sure the request was successful
            if (jsonResponse == null) {
-               publishProgress(R.string.splash_progress_err_fetch + "\n" + R.string.error_resolve);
+               publishProgress("Could not fetch campaigns from server\nCheck your internet " +
+                       "connection and try again!");
 
                return false; // return with failure
            }
@@ -80,7 +81,7 @@ public class SplashActivity extends AppCompatActivity {
                    c.setTitle(json.getString("title"));
                    c.setType(json.getString("type"));
                    c.setAmountRaised(json.getDouble("amt_raised"));
-                   c.setAmountRaised(json.getDouble("percent_complete"));
+                   c.setPercentComplete(json.getDouble("percent_complete"));
 
                    // print out progress on splash in case it takes a while (might not be seen otherwise)
                    publishProgress("Processing campaign " + n + " of " + jsonResponse.length());
@@ -89,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
                    db.addCampaign(c);
                } catch (JSONException e) {
                    e.printStackTrace();
-                   publishProgress(R.string.splash_progress_err_json + "");
+                   publishProgress("Sorry something went wrong. It is on our end :(");
                    return false; // something went wrong parsing JSON
                }
            }

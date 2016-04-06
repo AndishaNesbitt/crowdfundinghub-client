@@ -1,5 +1,6 @@
 package edu.psu.bd.csse.crowdfundinghubclient;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,8 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +153,26 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     Campaign campaignSelected = campaigns.get(position);
+
+                    // create popup dialog that will appear with campaign details
+                    final Dialog popupDialog = new Dialog(getContext());
+
+                    popupDialog.setCancelable(true); // this dialog can be canceled with BACK key
+                    popupDialog.setCanceledOnTouchOutside(true); // cancel when user touches outside dialog
+                    popupDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // hide title bar
+
+                    // set the popup's layout to our custom layout for campaign details
+                    popupDialog.setContentView(R.layout.popup_stats_dialog);
+
+                    // find and update popup dialog views
+                    TextView percentComplete = (TextView) popupDialog.findViewById(R.id.percentComplete);
+                    percentComplete.setText("Percent Complete: " + campaignSelected.getPercentComplete() + "%");
+
+                    TextView amountRaised = (TextView) popupDialog.findViewById(R.id.amountRaised);
+                    amountRaised.setText("Raised: $" + campaignSelected.getAmountRaised());
+
+                    // show the dialog windows with selected campaign details
+                    popupDialog.show();
 
                     return true;
                 }

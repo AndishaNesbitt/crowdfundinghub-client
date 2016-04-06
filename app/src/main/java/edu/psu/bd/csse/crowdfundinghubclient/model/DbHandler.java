@@ -87,7 +87,7 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
             c.setUrl(cursor.getString(1));
             c.setType(cursor.getString(2));
             c.setAmountRaised(cursor.getDouble(3));
-            c.setPercentComplete(cursor.getDouble(3));
+            c.setPercentComplete(cursor.getDouble(4));
 
             campaigns.add(c);
         }
