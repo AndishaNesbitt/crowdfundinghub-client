@@ -6,37 +6,34 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.psu.bd.csse.crowdfundinghubclient.model.Campaign;
-import edu.psu.bd.csse.crowdfundinghubclient.model.CampaignDAOArray;
 import edu.psu.bd.csse.crowdfundinghubclient.model.DbHandler;
 
 public class MainActivity extends AppCompatActivity {
 
     private static DbHandler db;
+    //private static BrowseController browseController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // create instance of the Database handler to get campaigns
+        //browseController = new BrowseController(this);
         db = new DbHandler(this, null, null, 1);
 
         // find our toolbar view
@@ -55,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
         // Set up the TabLayout and integrate it with the ViewPager
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * A placeholder fragment containing the list view.
      */
     public static class PlaceholderFragment extends Fragment {
         /**
@@ -159,7 +162,8 @@ public class MainActivity extends AppCompatActivity {
 
                     popupDialog.setCancelable(true); // this dialog can be canceled with BACK key
                     popupDialog.setCanceledOnTouchOutside(true); // cancel when user touches outside dialog
-                    popupDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // hide title bar
+                    //popupDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // hide title bar
+                    popupDialog.setTitle(campaignSelected.getTitle());
 
                     // set the popup's layout to our custom layout for campaign details
                     popupDialog.setContentView(R.layout.popup_stats_dialog);

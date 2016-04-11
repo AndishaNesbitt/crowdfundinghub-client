@@ -97,20 +97,6 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
         return campaigns;
     }
 
-    // temporary, might reuse elsewhere?
-    private String getTypeName(int section) {
-        switch (section) {
-            case Campaign.SECTION_REWARDS:
-                return Campaign.TYPE_REWARDS;
-            case Campaign.SECTION_DONATION:
-                return Campaign.TYPE_DONATION;
-            case Campaign.SECTION_EQUITY:
-                return Campaign.TYPE_EQUITY;
-            default:
-                return Campaign.TYPE_REWARDS;
-        }
-    }
-
     /* CRUD Operations */
 
     @Override
@@ -139,7 +125,7 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
     public List<Campaign> getCampaigns(int section) {
 
         String query = "SELECT * FROM " + TABLE_NAME
-                + " WHERE " + TABLE_COL_TYPE + " = \"" + getTypeName(section) + "\"";
+                + " WHERE " + TABLE_COL_TYPE + " = \"" + Campaign.getTypeName(section) + "\"";
 
         return queryCampaignList(query);
     }

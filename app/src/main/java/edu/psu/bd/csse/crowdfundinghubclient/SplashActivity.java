@@ -12,11 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-import java.util.ArrayList;
-
 import edu.psu.bd.csse.crowdfundinghubclient.model.Campaign;
 import edu.psu.bd.csse.crowdfundinghubclient.model.DbHandler;
-import edu.psu.bd.csse.crowdfundinghubclient.net.HttpController;
+import edu.psu.bd.csse.crowdfundinghubclient.controller.HttpController;
 
 public class SplashActivity extends AppCompatActivity {
 

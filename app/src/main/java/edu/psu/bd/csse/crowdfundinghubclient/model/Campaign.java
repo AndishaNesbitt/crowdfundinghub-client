@@ -1,14 +1,9 @@
 package edu.psu.bd.csse.crowdfundinghubclient.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.ArrayList;
-
 /**
  * Created by Zach on 1/31/2016.
  */
-public class Campaign implements Parcelable {
+public class Campaign {
 
     public static final String TYPE_REWARDS  = "Rewards";
     public static final String TYPE_DONATION = "Donations";
@@ -40,18 +35,17 @@ public class Campaign implements Parcelable {
         this.setPercentComplete(percentComplete);
     }
 
-    /**
-     * Private contructor for Android OS 'Parcel' usage
-     * Implementing Parcelable allows us to pass Lists of Campaign objects
-     * across intents (basically)
-     * @param in
-     */
-    private Campaign(Parcel in) {
-        this.title = in.readString();
-        this.url = in.readString();
-        this.type = in.readString();
-        this.amountRaised = in.readDouble();
-        this.percentComplete = in.readDouble();
+    public static String getTypeName(int section) {
+        switch (section) {
+            case Campaign.SECTION_REWARDS:
+                return Campaign.TYPE_REWARDS;
+            case Campaign.SECTION_DONATION:
+                return Campaign.TYPE_DONATION;
+            case Campaign.SECTION_EQUITY:
+                return Campaign.TYPE_EQUITY;
+            default:
+                return Campaign.TYPE_REWARDS;
+        }
     }
 
     public String getTitle() {
@@ -94,32 +88,4 @@ public class Campaign implements Parcelable {
     public void setPercentComplete(double percentComplete) {
         this.percentComplete = percentComplete;
     }
-
-    /*
-    * PARCELABLE IMPLEMENTATION
-    */
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(url);
-        dest.writeString(type);
-        dest.writeDouble(amountRaised);
-        dest.writeDouble(percentComplete);
-    }
-
-    public static final Parcelable.Creator<Campaign> CREATOR = new Parcelable.Creator<Campaign>() {
-        public Campaign createFromParcel(Parcel in) {
-            return new Campaign(in);
-        }
-
-        public Campaign[] newArray(int size) {
-            return new Campaign[size];
-        }
-    };
 }

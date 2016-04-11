@@ -1,4 +1,4 @@
-package edu.psu.bd.csse.crowdfundinghubclient.net;
+package edu.psu.bd.csse.crowdfundinghubclient.controller;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
