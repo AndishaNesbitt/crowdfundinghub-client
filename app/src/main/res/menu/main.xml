@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item
-        android:id="@+id/option_browse_amount_raised"
-        android:title="Order By Amount Raised" />
+    <!-- Order Campaigns Options Menu -->
+    <item android:id="@+id/optionOrderBy"
+          android:title="@string/option_order_by">
+        <!-- Order by Submenu (Order options) -->
+        <menu>
+            <item android:id="@+id/optionAmtRaisedLow"
+                  android:title="@string/option_amt_raised_low" />
+            <item android:id="@+id/optionAmtRaisedHigh"
+                android:title="@string/option_amt_raised_high" />
+            <item android:id="@+id/optionPercentCompleteLow"
+                android:title="@string/option_percent_complete_low" />
+            <item android:id="@+id/optionPercentCompleteHigh"
+                android:title="@string/option_percent_complete_high" />
+        </menu>
+    </item>
 
+    <!-- App and CSSE Capstone Project Information -->
+    <item android:id="@+id/optionAbout"
+          android:title="@string/option_about" />
 </menu>

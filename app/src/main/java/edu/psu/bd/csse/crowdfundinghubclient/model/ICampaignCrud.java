@@ -13,4 +13,6 @@ public interface ICampaignCrud {
 
     List<Campaign> getCampaigns(int section);
 
+    List<Campaign> getCampaigns(int section, String clause);
+
 }

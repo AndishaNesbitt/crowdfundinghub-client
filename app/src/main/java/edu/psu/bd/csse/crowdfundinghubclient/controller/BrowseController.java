@@ -12,7 +12,6 @@ public class BrowseController {
     private DbHandler db;
 
     public BrowseController(Context context) {
-
         // create instance of the Database handler to get campaigns
         db = new DbHandler(context, null, null, 1);
     }

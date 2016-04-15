@@ -25,6 +25,12 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
     private static final String TABLE_COL_AMT_RAISED = "AMT_RAISED";
     private static final String TABLE_COL_PERCENT_COMPLETE = "PERCENT_COMPLETE";
 
+    /* SQL Query clauses for campaign retrieval*/
+    public static final String ORDER_BY_AMT_RAISED_ASC = "ORDER BY " + TABLE_COL_AMT_RAISED + " ASC";
+    public static final String ORDER_BY_AMT_RAISED_DESC = "ORDER BY " + TABLE_COL_AMT_RAISED + " DESC";
+    public static final String ORDER_BY_PERCENT_ASC = "ORDER BY " + TABLE_COL_PERCENT_COMPLETE + " ASC";
+    public static final String ORDER_BY_PERCENT_DESC = "ORDER BY " + TABLE_COL_PERCENT_COMPLETE + " DESC";
+
     private SQLiteDatabase db;
 
     public DbHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -115,7 +121,6 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
 
     @Override
     public List<Campaign> getCampaigns() {
-
         String query = "SELECT * FROM " + TABLE_NAME;
 
         return queryCampaignList(query);
@@ -123,9 +128,17 @@ public class DbHandler extends SQLiteOpenHelper implements ICampaignCrud {
 
     @Override
     public List<Campaign> getCampaigns(int section) {
-
         String query = "SELECT * FROM " + TABLE_NAME
                 + " WHERE " + TABLE_COL_TYPE + " = \"" + Campaign.getTypeName(section) + "\"";
+
+        return queryCampaignList(query);
+    }
+
+    @Override
+    public List<Campaign> getCampaigns(int section, String clause) {
+        String query = "SELECT * FROM " + TABLE_NAME
+                + " WHERE " + TABLE_COL_TYPE + " = \"" + Campaign.getTypeName(section) + "\" "
+                + clause;
 
         return queryCampaignList(query);
     }

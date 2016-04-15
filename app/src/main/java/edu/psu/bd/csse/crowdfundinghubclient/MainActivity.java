@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,7 +27,9 @@ import edu.psu.bd.csse.crowdfundinghubclient.model.DbHandler;
 public class MainActivity extends AppCompatActivity {
 
     private static DbHandler db;
-    //private static BrowseController browseController;
+    private static String order = DbHandler.ORDER_BY_PERCENT_ASC;
+    private static ViewPager mViewPager;
+    private static CampaignBrowseFragment campaignBrowseFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // Set up the TabLayout and integrate it with the ViewPager
@@ -60,6 +63,28 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.optionAmtRaisedLow:
+                order = DbHandler.ORDER_BY_AMT_RAISED_ASC;
+                break;
+            case R.id.optionAmtRaisedHigh:
+                order = DbHandler.ORDER_BY_AMT_RAISED_DESC;
+                break;
+            case R.id.optionPercentCompleteLow:
+                order = DbHandler.ORDER_BY_PERCENT_ASC;
+                break;
+            case R.id.optionPercentCompleteHigh:
+                order = DbHandler.ORDER_BY_PERCENT_DESC;
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        mViewPager.getAdapter().notifyDataSetChanged();
+        return true;
+    }
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -69,8 +94,32 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            // Return a CampaignBrowseFragment (defined as a static inner class below).
+
+            campaignBrowseFragment = new CampaignBrowseFragment();
+            Bundle args = new Bundle();
+            // tell the fragment which type of campaigns to load for the tab section
+            args.putInt("section_number", position + 1);
+            // tell the fragment which order the campaigns should be listed
+            args.putString("order_clause", order);
+            // apply the arguments for the fragment
+            campaignBrowseFragment.setArguments(args);
+
+            return campaignBrowseFragment;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            // this method is called when notifyDataSetChange() is called
+            // happens when a user changes the order of the campaigns via the options menu
+
+            // get the current fragment in the section
+            campaignBrowseFragment = (CampaignBrowseFragment) object;
+            // reset the order_clause argument for the fragment to change the order of list
+            campaignBrowseFragment.getArguments().putString("order_clause", order);
+
+            // POSITION_NONE means that the Fragment must be recreated to apply changes
+            return POSITION_NONE;
         }
 
         @Override
@@ -96,26 +145,34 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing the list view.
      */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+    public static class CampaignBrowseFragment extends Fragment {
+
+        // The fragment argument representing the section number for this fragment
         private static final String ARG_SECTION_NUMBER = "section_number";
+        // The fragment argument representing the order clause to display campaigns
+        private static final String ARG_ORDER_CLAUSE = "order_clause";
+
+        // references the ListView for campaigns, inflated within our Browse Layout XML
+        private static ListView campaignListView;
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static CampaignBrowseFragment newInstance(int sectionNumber, String orderClause) {
+            CampaignBrowseFragment fragment = new CampaignBrowseFragment();
+
             Bundle args = new Bundle();
+            // pass section number so we know what campaigns to load into the list view
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString(ARG_ORDER_CLAUSE, orderClause);
             fragment.setArguments(args);
+
             return fragment;
         }
 
-        public PlaceholderFragment() {
+        public CampaignBrowseFragment() {
+
         }
 
         @Override
@@ -123,10 +180,11 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             // inflate our browse view that contains a ListView for campaign listings
             View rootView = inflater.inflate(R.layout.fragment_campaign_browse, container, false);
-            ListView campaignListView = (ListView)rootView.findViewById(R.id.campaignListView);
-
+            campaignListView = (ListView)rootView.findViewById(R.id.campaignListView);
+            
             // get campaigns from the database for the tab section (query based on campaign type)
-            final List<Campaign> campaigns = db.getCampaigns(getArguments().getInt(ARG_SECTION_NUMBER));
+            final List<Campaign> campaigns = db.getCampaigns(getArguments().getInt(ARG_SECTION_NUMBER),
+                    getArguments().getString(ARG_ORDER_CLAUSE));
 
             // use custom List adapter to populate ListView
             CampaignListAdapter adapter = new CampaignListAdapter(getContext(), campaigns);
@@ -136,8 +194,8 @@ public class MainActivity extends AppCompatActivity {
             campaignListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    // get the selected campaign
-                    Campaign campaignSelected = campaigns.get(position);
+                    // get the selected item as a Campaign model
+                    Campaign campaignSelected = (Campaign) parent.getAdapter().getItem(position);
 
                     // Create a new intent, we are starting an activity to view the selected campaign's webpage
                     Intent intent = new Intent(getContext(), WebActivity.class);
@@ -155,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
             campaignListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    Campaign campaignSelected = campaigns.get(position);
+                    Campaign campaignSelected = (Campaign) parent.getAdapter().getItem(position);
 
                     // create popup dialog that will appear with campaign details
                     final Dialog popupDialog = new Dialog(getContext());

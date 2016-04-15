@@ -62,4 +62,9 @@ public class CampaignDAOArray implements ICampaignCrud {
 
         return campaignsOfType;
     }
+
+    @Override
+    public List<Campaign> getCampaigns(int section, String clause) {
+        return null;
+    }
 }

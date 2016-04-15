@@ -5,13 +5,13 @@ package edu.psu.bd.csse.crowdfundinghubclient.model;
  */
 public class Campaign {
 
-    public static final String TYPE_REWARDS  = "Rewards";
-    public static final String TYPE_DONATION = "Donations";
-    public static final String TYPE_EQUITY   = "Equity";
 
     public static final int SECTION_REWARDS  = 1;
     public static final int SECTION_DONATION = 2;
     public static final int SECTION_EQUITY   = 3;
+    public static final String TYPE_REWARDS  = "Rewards";
+    public static final String TYPE_DONATION = "Donations";
+    public static final String TYPE_EQUITY   = "Equity";
 
     private String title;
     private String url;
