@@ -32,6 +32,11 @@ public class SplashActivity extends AppCompatActivity {
 
         progressMessage = (TextView) findViewById(R.id.progressMessageText);
 
+        // push - notifications
+        if (regid.isEmpty()) {
+            registerInBackground();
+        }
+
         // SharedPreferences allows us to save when our app is open.  We only want to request for
         // new campaigns once a day (Server crawls for campaigns everyday at 3AM)
         preferences = getSharedPreferences("Last_Opened", MODE_PRIVATE);
