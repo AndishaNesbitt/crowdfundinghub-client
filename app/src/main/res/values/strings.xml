@@ -3,8 +3,8 @@
 
     <!-- Tab Section Titles -->
     <string name="tab_title_give">Give</string>
-    <string name="tab_title_earn">Earn</string>
-    <string name="tab_title_invest">Invest</string>
+    <string name="tab_title_earn">Get</string>
+    <string name="tab_title_invest">Grow</string>
 
     <!-- Toolbar options menu items -->
     <string name="option_order_by">Order Campaigns By...</string>
